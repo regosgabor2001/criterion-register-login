@@ -1,0 +1,20 @@
+{
+    "name": "regos/criterion-register-login",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "CriterionRegisterLogin\\Controller\\": "src/Controller/",
+            "CriterionRegisterLogin\\Model\\": "src/Model/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Regős Gábor"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "twig/twig": "4.x-dev"
+    }
+}
