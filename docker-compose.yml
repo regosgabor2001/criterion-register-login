@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # PHP + Apache webszerver
+  web:
+    build: .
+    container_name: php_web_app
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+
+  # MySQL adatbázis
+  db:
+    image: mysql:8.0
+    container_name: php_mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: criterion_db
+      MYSQL_USER: db_user
+      MYSQL_PASSWORD: db_password
+    ports:
+      - "3307:3307"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  # phpMyAdmin (EZ AZ ÚJ RÉSZ)
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: php_my_admin
+    restart: always
+    ports:
+      - "8081:80"  # A 8081-es porton fogod elérni a böngészőből
+    environment:
+      PMA_HOST: db # Megmondjuk neki, hogy a 'db' nevű konténerhez csatlakozzon
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root_password
+    depends_on:
+      - db
+
+volumes:
+  db_data:
