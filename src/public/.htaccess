@@ -1,0 +1,6 @@
+RewriteEngine On
+
+# Ha a kért útvonal nem egy létező fájl vagy mappa, küldjük az index.php-ra
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [L,QSA]
