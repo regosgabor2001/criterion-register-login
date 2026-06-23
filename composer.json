@@ -4,8 +4,11 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "CriterionRegisterLogin\\Controller\\": "src/Controller/",
-            "CriterionRegisterLogin\\Model\\": "src/Model/"
+            "CriterionRegisterLogin\\Controller\\": "src/controller/",
+            "CriterionRegisterLogin\\Model\\": "src/model/",
+            "CriterionRegisterLogin\\Router\\": "src/router/",
+            "CriterionRegisterLogin\\Database\\": "src/database/",
+            "CriterionRegisterLogin\\Utility\\": "src/utility/"
         }
     },
     "authors": [
