@@ -1,7 +1,6 @@
 <?php
 namespace CriterionRegisterLogin\Service;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
 use CriterionRegisterLogin\Model\User;
 
 class AuthService {
@@ -13,12 +12,23 @@ class AuthService {
         $user = new User([
             'username'   => $data['username'],
             'email'      => $data['email'],
-            'password'   => password_hash('password', PASSWORD_ARGON2ID, ['memory_cost' => 1<<17, 'time_cost' => 4, 'threads' => 2]),
+            'password'   => password_hash($data['password'], PASSWORD_ARGON2ID, ['memory_cost' => 1<<17, 'time_cost' => 4, 'threads' => 2]),
             'first_name' => $data['first_name'],
             'last_name'  => $data['last_name'],
         ]);
 
-        return $user->save();
+        $user->save();
+
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        session_regenerate_id(true);
+
+        $_SESSION['user_id'] = $user->id;
+        $_SESSION['user_email'] = $user->email;
+        $_SESSION['user_username'] = $user->username;
+
+        return true;
     }
 
     public function login(string $emailUsername, string $password): bool {
@@ -29,7 +39,7 @@ class AuthService {
         }
 
         if (!$user || !password_verify($password, $user->password)) {
-            throw new Exception("Hibás email cím vagy jelszó.");
+            throw new \Exception("Hibás email cím vagy jelszó.");
         }
 
         if (session_status() === PHP_SESSION_NONE) {
@@ -63,7 +73,7 @@ class AuthService {
                 $params["httponly"]
             );
         }
-        
+
         session_destroy();
     }
 }

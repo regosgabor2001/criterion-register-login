@@ -2,7 +2,6 @@
 
 namespace CriterionRegisterLogin\Http;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
 use CriterionRegisterLogin\Model\User;
 
 class Auth {

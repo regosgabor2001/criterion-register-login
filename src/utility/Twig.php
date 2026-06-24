@@ -1,8 +1,6 @@
 <?php
 namespace CriterionRegisterLogin\Utility;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
 class Twig
 {
     private static $twig;

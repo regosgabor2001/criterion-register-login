@@ -1,6 +1,10 @@
 <?php
 namespace CriterionRegisterLogin\Http;
 
+use CriterionRegisterLogin\Http\Auth;
+use CriterionRegisterLogin\Http\Validator;
+use CriterionRegisterLogin\Model\User;
+
 class Request {
     private array $data;
     private array $server;
@@ -42,5 +46,36 @@ class Request {
 
     public function path(): string {
         return parse_url($this->server['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+    }
+
+    public function user(): ?User {
+        return Auth::user();
+    }
+
+    public function validate(array $rules): array {
+        $validator = new Validator($this->all(), $rules);
+
+        if (!$validator->validate()) {
+            if ($this->method() === 'POST' && (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)) {
+                $response = Response::json([
+                    'message' => 'A megadott adatok érvénytelenek.',
+                    'errors' => $validator->errors()
+                ], 422);
+                $response->send();
+                exit;
+            }
+
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+            $_SESSION['errors'] = $validator->errors();
+            $_SESSION['old'] = $this->all();
+
+            $referer = $_SERVER['HTTP_REFERER'] ?? '/';
+            Response::redirect($referer)->send();
+            exit;
+        }
+
+        return $this->only(array_keys($rules));
     }
 }

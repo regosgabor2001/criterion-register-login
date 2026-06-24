@@ -1,7 +1,6 @@
 <?php
 namespace CriterionRegisterLogin\Model;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
 use CriterionRegisterLogin\Database\Database;
 use mysqli;
 
