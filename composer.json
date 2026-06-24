@@ -8,7 +8,10 @@
             "CriterionRegisterLogin\\Model\\": "src/model/",
             "CriterionRegisterLogin\\Router\\": "src/router/",
             "CriterionRegisterLogin\\Database\\": "src/database/",
-            "CriterionRegisterLogin\\Utility\\": "src/utility/"
+            "CriterionRegisterLogin\\Utility\\": "src/utility/",
+            "CriterionRegisterLogin\\Http\\": "src/http/",
+            "CriterionRegisterLogin\\Service\\": "src/service/",
+            "CriterionRegisterLogin\\Middleware\\": "src/middleware/"
         }
     },
     "authors": [

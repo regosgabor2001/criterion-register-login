@@ -1,0 +1,15 @@
+{% extends 'index.html.twig' %}
+
+{% block head %}
+<link rel="stylesheet" href="/css/sidebar.css">
+<script src="/js/sidebar.js"></script>
+{% endblock %}
+
+{% block title %}Vezérlőpult{% endblock %}
+
+{% block body %}
+{% include 'components/sidebar.html.twig' %}
+<div class="love">
+    <h1>I love sidebars.</h1>
+</div>
+{% endblock %}

@@ -1,47 +1,45 @@
 {% extends 'index.html.twig' %}
 
 {% block head %}
-    <link rel="stylesheet" href="/css/register-login.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="/js/register-login.js"></script>
+<link rel="stylesheet" href="/css/register-login.css">
+<script src="/js/register-login.js"></script>
 {% endblock %}
 
-{% block title %}Register/Login{% endblock %}
+{% block title %}Regisztráció/Bejelentkezés{% endblock %}
 
 {% block body %}
-    <h2>Weekly Coding Challenge #1: Sign in/up Form</h2>
 <div class="container" id="container">
 	<div class="form-container sign-up-container">
-		<form action="#">
-			<h1>Create Account</h1>
-			<span>or use your email for registration</span>
-			<input type="text" placeholder="Name" />
-			<input type="email" placeholder="Email" />
-			<input type="password" placeholder="Password" />
-			<button>Sign Up</button>
+		<form action="/register" method="post">
+			<h1>Fiók létrehozása</h1>
+			<input type="text" name="username" placeholder="Felhasználónév" required />
+			<input type="email" name="email" placeholder="Email" required />
+			<input type="text" name="last_name" placeholder="Vezetéknév" required />
+			<input type="text" name="first_name" placeholder="Keresztnév" required />
+			<input type="password" name="password" placeholder="Jelszó" required />
+			<input type="password" name="confirm_password" placeholder="Jelszó megismétlése" required />
+			<button type="submit">Regisztráció</button>
 		</form>
 	</div>
 	<div class="form-container sign-in-container">
-		<form action="#">
-			<h1>Sign in</h1>
-			<span>or use your account</span>
-			<input type="email" placeholder="Email" />
-			<input type="password" placeholder="Password" />
-			<a href="#">Forgot your password?</a>
-			<button>Sign In</button>
+		<form action="/login" method="post">
+			<h1>Bejelentkezés</h1>
+			<input type="text" name="email_username" placeholder="Email / Felhasználónév" required />
+			<input type="password" name="password" placeholder="Jelszó" required />
+			<button type="submit">Bejelentkezés</button>
 		</form>
 	</div>
 	<div class="overlay-container">
 		<div class="overlay">
 			<div class="overlay-panel overlay-left">
-				<h1>Welcome Back!</h1>
-				<p>To keep connected with us please login with your personal info</p>
-				<button class="ghost" id="signIn">Sign In</button>
+				<h1>Üdv újra itt!</h1>
+				<p>Kérlek add meg a kért adatokat a bejelentkezéshez</p>
+				<button class="ghost" id="signIn">Bejelentkezés</button>
 			</div>
 			<div class="overlay-panel overlay-right">
-				<h1>Hello, Friend!</h1>
-				<p>Enter your personal details and start journey with us</p>
-				<button class="ghost" id="signUp">Sign Up</button>
+				<h1>Üdvözöllek!</h1>
+				<p>Add meg személyes adataidat a regisztrációhoz</p>
+				<button class="ghost" id="signUp">Regisztráció</button>
 			</div>
 		</div>
 	</div>

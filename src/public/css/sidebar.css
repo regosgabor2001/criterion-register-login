@@ -1,0 +1,79 @@
+html,
+body {
+  height: 100%;
+  margin: 0; /* Itt javítva a pontosvessző */
+  padding: 0;
+}
+
+body {
+  background-color: lightgray;
+  font-family: monaco, Consolas, Lucida Console, monospace;
+  display: flex; 
+}
+
+#sidebar {
+  width: 200px;
+  background: black;
+  position: absolute;
+  height: 100%;
+  top: 0;
+  left: -200px;
+  transition: left 0.5s ease;
+  z-index: 1000;
+}
+
+#sidebar.visible {
+  left: 0px;
+  transition: left 0.7s ease;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  list-style: none;
+  padding: 10px 0 10px 10px;
+  background: #46637F;
+  border-bottom: 1px solid #233140;
+}
+
+li a {
+  text-decoration: none;
+  color: white;
+}
+
+#sidebar-btn {
+  display: inline-block;
+  vertical-align: middle;
+  width: 20px;
+  height: 15px;
+  cursor: pointer;
+  margin: 20px;
+  position: absolute;
+  right: -60px;
+  top: 0px;
+}
+
+#sidebar-btn span {
+  background-color: grey;
+  height: 1px;
+  display: block;
+  margin-bottom: 5px;
+}
+
+#sidebar-btn span:nth-child(2) {
+  width: 75%;
+}
+
+@media (min-width: 768px) {
+  #sidebar {
+    position: relative;
+    left: 0 !important;
+  }
+
+  #sidebar-btn {
+    display: none;
+  }
+}
