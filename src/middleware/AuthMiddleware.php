@@ -1,7 +1,6 @@
 <?php
 namespace CriterionRegisterLogin\Middleware;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
 use CriterionRegisterLogin\Http\Request;
 use CriterionRegisterLogin\Http\Response;
 
