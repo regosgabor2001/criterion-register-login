@@ -3,6 +3,7 @@
 namespace CriterionRegisterLogin\Middleware;
 
 use CriterionRegisterLogin\Http\Request;
+use CriterionRegisterLogin\Http\Response;
 
 class VerifyCsrfToken {
     public function handle(Request $request): void {
@@ -15,8 +16,7 @@ class VerifyCsrfToken {
             $sessionToken = $_SESSION['csrf_token'] ?? '';
 
             if (empty($submittedToken) || !hash_equals($sessionToken, $submittedToken)) {
-                http_response_code(419);
-                echo "CSRF token hiányzik vagy érvénytelen.";
+                Response::make("CSRF token hiányzik vagy érvénytelen.", 419)->send();
                 exit;
             }
         }
