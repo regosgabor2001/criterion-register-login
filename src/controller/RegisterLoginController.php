@@ -9,7 +9,9 @@ use CriterionRegisterLogin\Utility\Twig;
 class RegisterLoginController {
     public function registerLoginpage(): Response {
         $twig = new Twig();
-        return Response::make($twig->render('register-login.html.twig'));
+        return Response::make($twig->render('register-login.html.twig', [
+            'csrf_token' => Request::generateToken()
+        ]));
     }
 
     public function register(Request $request): Response {

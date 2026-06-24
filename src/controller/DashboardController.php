@@ -11,6 +11,9 @@ class DashboardController {
         $user = Auth::user();
 
         $twig = new Twig();
-        return Response::make($twig->render('dashboard.html.twig'));
+        return Response::make($twig->render('dashboard.html.twig', [
+            'user' => $user,
+            'csrf_token' => Request::generateToken()
+        ]));
     }
 }
