@@ -1,6 +1,13 @@
 <div id="sidebar">
     <ul>
-        <li><a href="/logout">Kijelentkezés</a></li>
+        <li><a href="/dashboard">Vezérlőpult</a></li>
+        <li>
+            <form action="/logout" method="POST" style="margin:0;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <button type="submit"
+                    style="background:none; border:none; color:white; cursor:pointer; font-family:inherit; padding:0; text-align:left; width:100%;">Kijelentkezés</button>
+            </form>
+        </li>
     </ul>
 
     <div id="sidebar-btn">
@@ -8,5 +15,4 @@
         <span></span>
         <span></span>
     </div>
-
 </div>

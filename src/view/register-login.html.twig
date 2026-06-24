@@ -12,6 +12,7 @@
 	<div class="form-container sign-up-container">
 		<form action="/register" method="post">
 			<h1>Fiók létrehozása</h1>
+			<input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 			<input type="text" name="username" placeholder="Felhasználónév" required />
 			<input type="email" name="email" placeholder="Email" required />
 			<input type="text" name="last_name" placeholder="Vezetéknév" required />
@@ -24,6 +25,7 @@
 	<div class="form-container sign-in-container">
 		<form action="/login" method="post">
 			<h1>Bejelentkezés</h1>
+			<input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 			<input type="text" name="email_username" placeholder="Email / Felhasználónév" required />
 			<input type="password" name="password" placeholder="Jelszó" required />
 			<button type="submit">Bejelentkezés</button>

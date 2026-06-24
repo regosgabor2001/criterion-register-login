@@ -2,6 +2,7 @@
 
 {% block head %}
 <link rel="stylesheet" href="/css/sidebar.css">
+<link rel="stylesheet" href="/css/dashboard.css">
 <script src="/js/sidebar.js"></script>
 {% endblock %}
 
@@ -9,7 +10,30 @@
 
 {% block body %}
 {% include 'components/sidebar.html.twig' %}
-<div class="love">
-    <h1>I love sidebars.</h1>
+
+<div id="content">
+    <h1>Felhasználói adatok</h1>
+
+    <div class="profile-card">
+        <div class="profile-field">
+            <div class="label">Felhasználónév</div>
+            <div class="value">{{ user.username }}</div>
+        </div>
+
+        <div class="profile-field">
+            <div class="label">Teljes név</div>
+            <div class="value">{{ user.last_name }} {{ user.first_name }}</div>
+        </div>
+
+        <div class="profile-field">
+            <div class="label">E-mail cím</div>
+            <div class="value">{{ user.email }}</div>
+        </div>
+
+        <div class="profile-field">
+            <div class="label">Regisztráció dátuma</div>
+            <div class="value">{{ user.created_at|date("Y-m-d H:i") }}</div>
+        </div>
+    </div>
 </div>
 {% endblock %}
