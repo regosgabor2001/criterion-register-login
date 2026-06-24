@@ -1,13 +1,18 @@
 <?php
 namespace CriterionRegisterLogin\Router;
 
+require_once __DIR__ . '/../../vendor/autoload.php';
+use CriterionRegisterLogin\Http\Request;
+use CriterionRegisterLogin\Http\Response;
+use CriterionRegisterLogin\Http\Validator;
+
 class Router {
     private static $instance = null;
     private $routes = [];
     private $currentRouteIndex = null;
 
     // Singleton elérés, hogy a statikus hívások egy példányba gyűljenek
-    private static function getInstance() {
+    private static function getInstance(): self {
         if (self::$instance === null) {
             self::$instance = new self();
         }
@@ -15,7 +20,7 @@ class Router {
     }
 
     // Route regisztrálása
-    public static function add($method, $uri, $action) {
+    public static function add($method, $uri, $action): self {
         $router = self::getInstance();
         
         // Laravel-stílusú {param} átalakítása Regex kifejezéssé
@@ -37,16 +42,16 @@ class Router {
         return $router;
     }
 
-    public static function get($uri, $action) {
+    public static function get($uri, $action): self {
         return self::add('GET', $uri, $action);
     }
 
-    public static function post($uri, $action) {
+    public static function post($uri, $action): self {
         return self::add('POST', $uri, $action);
     }
 
     // Laravel-stílusú név hozzárendelés: ->name('profile')
-    public function name($name) {
+    public function name($name): self {
         if ($this->currentRouteIndex !== null) {
             $this->routes[$this->currentRouteIndex]['name'] = $name;
         }
@@ -54,7 +59,7 @@ class Router {
     }
 
     // Middleware hozzárendelés: ->middleware(AuthMiddleware::class)
-    public function middleware($middleware) {
+    public function middleware($middleware): self {
         if ($this->currentRouteIndex !== null) {
             $this->routes[$this->currentRouteIndex]['middleware'][] = $middleware;
         }
@@ -62,55 +67,96 @@ class Router {
     }
 
     // Kérés feldolgozása (Dispatch)
-    public static function dispatch() {
+    public static function dispatch(): void {
         $router = self::getInstance();
         
-        // Aktuális URI és Method lekérése query stringek nélkül
-        $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        $requestMethod = $_SERVER['REQUEST_METHOD'];
+        // 1. A Laravel-stílusú Request objektum példányosítása az aktuális kérésből
+        $request = Request::capture();
+        
+        $requestUri = $request->path();
+        $requestMethod = $request->method();
 
-        // Ha POST kérésnél van _method (pl. PUT/DELETE emulációhoz)
-        if ($requestMethod === 'POST' && isset($_POST['_method'])) {
-            $requestMethod = strtoupper($_POST['_method']);
+        // Ha POST kérésnél van _method (pl. PUT/DELETE emulációhoz a request-ből)
+        if ($requestMethod === 'POST' && $request->has('_method')) {
+            $requestMethod = strtoupper($request->input('_method'));
         }
 
         foreach ($router->routes as $route) {
             if ($route['method'] === $requestMethod && preg_match($route['pattern'], $requestUri, $matches)) {
                 
-                // Csak a megnevezett (string kulcsú) paramétereket tartjuk meg a regex-ből
                 $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
 
-                // Middleware-ek futtatása (ha vannak)
                 foreach ($route['middleware'] as $middleware) {
-                    // Itt példányosítjuk a middleware-t, és ha a handle() hamisat ad vissza, megállítjuk a futást
                     $mwInstance = new $middleware();
-                    if (!$mwInstance->handle()) {
-                        return; // A middleware kezeli a redirectet vagy die()-t
+                    if (!$mwInstance->handle($request)) {
+                        return; 
                     }
                 }
 
-                // Action végrehajtása (Closure vagy Controller)
+                $callbackArgs = array_merge([$request], $params);
+                $response = null;
+
                 if (is_callable($route['action'])) {
-                    return call_user_func_array($route['action'], $params);
+                    $response = call_user_func_array($route['action'], $callbackArgs);
                 } 
                 
-                // Ha Controller@metódus string formátum: 'UserController@show'
-                if (is_string($route['action']) && strpos($route['action'], '@') !== false) {
+                // Action végrehajtása (Controller@metódus)
+                elseif (is_string($route['action']) && strpos($route['action'], '@') !== false) {
                     list($controller, $method) = explode('@', $route['action']);
-                    if (class_exists($controller)) {
-                        $controllerInstance = new $controller();
-                        if (method_exists($controllerInstance, $method)) {
-                            return call_user_func_array([$controllerInstance, $method], $params);
-                        }
+                    
+                    if (!class_exists($controller)) {
+                        throw new \Exception("Hiba: A(z) '$controller' osztály nem található.");
                     }
+                    
+                    $controllerInstance = new $controller();
+                    if (!method_exists($controllerInstance, $method)) {
+                        throw new \Exception("Hiba: A(z) '$method' metódus nem létezik a(z) '$controller' osztályban.");
+                    }
+                    
+                    $response = call_user_func_array([$controllerInstance, $method], $callbackArgs);
+                } else {
+                    throw new \Exception("Route action nem található vagy nem meghívható.");
                 }
 
-                throw new Exception("Route action nem található vagy nem meghívható.");
+                if ($response instanceof Response) {
+                    $response->send();
+                } elseif (is_array($response)) {
+                    Response::json($response)->send();
+                } else {
+                    Response::make((string)$response)->send();
+                }
+                
+                return;
             }
         }
 
-        // 404-es hiba ha nincs találat
-        http_response_code(404);
-        echo "404 - Az oldal nem található.";
+        Response::make("404 - Az oldal nem található.", 404)->send();
+    }
+
+    public function validate(array $rules): array {
+        $validator = new Validator($this->all(), $rules);
+
+        if (!$validator->validate()) {
+            if ($this->method() === 'POST' && (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)) {
+                $response = Response::json([
+                    'message' => 'A megadott adatok érvénytelenek.',
+                    'errors' => $validator->errors()
+                ], 422);
+                $response->send();
+                exit;
+            }
+
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+            $_SESSION['errors'] = $validator->errors();
+            $_SESSION['old'] = $this->all();
+
+            $referer = $_SERVER['HTTP_REFERER'] ?? '/';
+            Response::redirect($referer)->send();
+            exit;
+        }
+
+        return $this->only(array_keys($rules));
     }
 }
