@@ -34,4 +34,4 @@ http://localhost:8080
 Running the Automated Test Suite
 
 Bash
-docker compose exec app ./vendor/bin/phpunit tests
+docker compose exec web ./vendor/bin/phpunit tests
