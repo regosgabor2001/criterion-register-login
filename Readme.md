@@ -31,7 +31,10 @@ docker compose exec app composer install
 The application is accessible on this address:
 http://localhost:8080
 
+The database is accessible on this address:
+http://localhost:8081
+
 Running the Automated Test Suite
 
 Bash
-docker compose exec app ./vendor/bin/phpunit tests
+docker compose exec web ./vendor/bin/phpunit tests
