@@ -31,7 +31,7 @@ class Router {
             'uri'        => $uri,
             'pattern'    => $pattern,
             'action'     => $action,
-            'middleware' => [],
+            'middleware' => [], // Ez egy üres tömbként indul, ide gyűlnek a szűrők
             'name'       => null
         ];
 
@@ -57,10 +57,21 @@ class Router {
         return $this;
     }
 
-    // Middleware hozzárendelés: ->middleware(AuthMiddleware::class)
+    // ==========================================================================
+    // MODOSÍTOTT MIDDLEWARE METÓDUS (Tömböt és stringet is fogad)
+    // ==========================================================================
     public function middleware($middleware): self {
         if ($this->currentRouteIndex !== null) {
-            $this->routes[$this->currentRouteIndex]['middleware'][] = $middleware;
+            if (is_array($middleware)) {
+                // Ha tömböt kapunk (pl. [Csrf::class, Auth::class]), összefésüljük a meglévővel
+                $this->routes[$this->currentRouteIndex]['middleware'] = array_merge(
+                    $this->routes[$this->currentRouteIndex]['middleware'], 
+                    $middleware
+                );
+            } else {
+                // Ha egy sima stringet kapunk, csak simán betoljuk a tömb végére
+                $this->routes[$this->currentRouteIndex]['middleware'][] = $middleware;
+            }
         }
         return $this;
     }
@@ -85,10 +96,17 @@ class Router {
                 
                 $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
 
+                // ==========================================================================
+                // BIZTONSÁGOSABB MIDDLEWARE FUTTATÁS
+                // ==========================================================================
                 foreach ($route['middleware'] as $middleware) {
-                    $mwInstance = new $middleware();
-                    if (!$mwInstance->handle($request)) {
-                        return; 
+                    if (class_exists($middleware)) {
+                        $mwInstance = new $middleware();
+                        
+                        // Csak meghívjuk a handle-t. Ha hiba van, a middleware-ben lévő exit; leállítja a rendszert.
+                        // Nem kell if(!handle()), mert ha sikeres, a middleware nem ad vissza semmit (void), 
+                        // így a korábbi if megállította volna a futást.
+                        $mwInstance->handle($request); 
                     }
                 }
 
