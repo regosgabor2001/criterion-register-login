@@ -1,8 +1,8 @@
 {% extends 'index.html.twig' %}
 
 {% block head %}
-<link rel="stylesheet" href="/css/register-login.css">
-<script src="/js/register-login.js"></script>
+<link rel="stylesheet" href="/assets/css/register-login.css">
+<script src="/assets/js/register-login.js"></script>
 {% endblock %}
 
 {% block title %}Regisztráció/Bejelentkezés{% endblock %}
@@ -13,12 +13,42 @@
 		<form action="/register" method="post">
 			<h1>Fiók létrehozása</h1>
 			<input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-			<input type="text" name="username" placeholder="Felhasználónév" required />
-			<input type="email" name="email" placeholder="Email" required />
-			<input type="text" name="last_name" placeholder="Vezetéknév" required />
-			<input type="text" name="first_name" placeholder="Keresztnév" required />
+			<input type="text" name="username" placeholder="Felhasználónév" value="{{ old.username ?? '' }}" required />
+
+			{% if errors.username %}
+			<span style="color: red; font-size: 12px;">{{ errors.username|first }}</span>
+			{% endif %}
+
+			<input type="email" name="email" placeholder="Email" value="{{ old.email ?? '' }}" required />
+
+			{% if errors.email %}
+			<span style="color: red; font-size: 12px;">{{ errors.email|first }}</span>
+			{% endif %}
+
+			<input type="text" name="last_name" placeholder="Vezetéknév" value="{{ old.last_name ?? '' }}" required />
+
+			{% if errors.last_name %}
+			<span style="color: red; font-size: 12px;">{{ errors.last_name|first }}</span>
+			{% endif %}
+
+			<input type="text" name="first_name" placeholder="Keresztnév" value="{{ old.first_name ?? '' }}" required />
+
+			{% if errors.first_name %}
+			<span style="color: red; font-size: 12px;">{{ errors.first_name|first }}</span>
+			{% endif %}
+
 			<input type="password" name="password" placeholder="Jelszó" required />
+
+			{% if errors.password %}
+			<span style="color: red; font-size: 12px;">{{ errors.password|first }}</span>
+			{% endif %}
+
 			<input type="password" name="confirm_password" placeholder="Jelszó megismétlése" required />
+
+			{% if errors.confirm_password %}
+			<span style="color: red; font-size: 12px;">{{ errors.confirm_password|first }}</span>
+			{% endif %}
+
 			<button type="submit">Regisztráció</button>
 		</form>
 	</div>
@@ -26,8 +56,19 @@
 		<form action="/login" method="post">
 			<h1>Bejelentkezés</h1>
 			<input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-			<input type="text" name="email_username" placeholder="Email / Felhasználónév" required />
+			<input type="text" name="email_username" placeholder="Email / Felhasználónév"
+				value="{{ old.email_username ?? '' }}" required />
+
+			{% if errors.email_username %}
+			<span style="color: red; font-size: 12px;">{{ errors.email_username|first }}</span>
+			{% endif %}
+
 			<input type="password" name="password" placeholder="Jelszó" required />
+
+			{% if errors.password %}
+			<span style="color: red; font-size: 12px;">{{ errors.password|first }}</span>
+			{% endif %}
+
 			<button type="submit">Bejelentkezés</button>
 		</form>
 	</div>
