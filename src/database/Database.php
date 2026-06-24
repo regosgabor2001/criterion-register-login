@@ -7,7 +7,20 @@ class Database
 
     public function __construct()
     {
-        self::$connection = mysqli_connect('db', 'db_user', 'db_password', 'criterion_db') or die('Could not connect to the database.');
+        $envPath = __DIR__ . '/../../.env';
+
+        if (file_exists($envPath)) {
+            $env = parse_ini_file($envPath);
+            
+            $dbHost = $env['DB_HOST'] ?? '';
+            $dbName = $env['DB_NAME'] ?? '';
+            $dbUser = $env['DB_USER'] ?? '';
+            $dbPass = $env['DB_PASS'] ?? '';
+        } else {
+            die("Hiányzik a .env fájl.");
+        }
+
+        self::$connection = mysqli_connect($dbHost, $dbUser, $dbPass, $dbName) or die('Nem sikerült csatlakozni az adatbázishoz.');
     }
 
     public function getConnection()

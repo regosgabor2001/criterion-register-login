@@ -11,17 +11,14 @@ class Validator {
         $this->rules = $rules;
     }
 
-    // A validáció lefuttatása
     public function validate(): bool {
         foreach ($this->rules as $field => $ruleset) {
-            // Ha a szabály string, átalakítjuk tömbbé (pl. "required|email" -> ["required", "email"])
             $rules = is_string($ruleset) ? explode('|', $ruleset) : $ruleset;
             $value = $this->data[$field] ?? null;
 
             foreach ($rules as $rule) {
                 $parameters = [];
 
-                // Ha a szabálynak van paramétere (pl. min:8)
                 if (strpos($rule, ':') !== false) {
                     list($rule, $paramString) = explode(':', $rule, 2);
                     $parameters = explode(',', $paramString);
@@ -31,7 +28,6 @@ class Validator {
 
                 if (method_exists($this, $methodName)) {
                     if (!$this->$methodName($field, $value, $parameters)) {
-                        // Ha egy szabály elbukott, nem futtatjuk a többit az adott mezőre
                         break;
                     }
                 }
@@ -41,12 +37,9 @@ class Validator {
         return empty($this->errors);
     }
 
-    // Hibák lekérése
     public function errors(): array {
         return $this->errors;
     }
-
-    // --- SZABÁLYOK METÓDUSAI ---
 
     protected function validateRequired($field, $value): bool {
         if ($value === null || $value === '' || (is_array($value) && count($value) === 0)) {
