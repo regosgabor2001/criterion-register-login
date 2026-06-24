@@ -19,17 +19,12 @@ Ensure all project files are structured within your target directory, then navig
 ```bash
 cd criterion-register-login
 
-2. Launch the Infrastructure Pipeline (Docker Compose)
+2. Launch the Infrastructure Pipeline which also initialize the database
 
 Bash
 docker compose up -d --build
 
-3. Database Initialization (Schema Seed)
-
-Bash
-docker compose exec -T db mysql -u root -psecret criterion_db < database_dump.sql
-
-4. Install Composer Dependencies
+3. Install Composer Dependencies
 
 Bash
 docker compose exec app composer install
