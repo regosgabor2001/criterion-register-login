@@ -12,7 +12,7 @@
     <php>
         <env name="DB_HOST" value="db"/>
         <env name="DB_NAME" value="criterion_test"/>
-        <env name="DB_USER" value="db_user"/>
-        <env name="DB_PASS" value="db_password"/>
+        <env name="DB_USER" value="root"/>
+        <env name="DB_PASS" value="root_password"/>
     </php>
 </phpunit>
