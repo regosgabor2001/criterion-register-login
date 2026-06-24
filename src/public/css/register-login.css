@@ -251,42 +251,39 @@ footer a {
     text-decoration: none;
 }
 
-/* Mobil nézet (768px vagy annál kisebb képernyőkre) */
 @media (max-width: 768px) {
     body {
         height: auto;
-        margin: 20px 0; /* Engedjük, hogy a body görgethető legyen, ne ragadjon be 100vh-ra */
+        margin: 20px 0;
     }
 
     .container {
         display: flex;
-        flex-direction: column; /* Egymás alá kényszeríti a formokat */
+        flex-direction: column;
         width: 100%;
-        max-width: 400px;       /* Mobilon ne legyen túl széles az űrlap */
+        max-width: 400px;
         height: auto;
         min-height: auto;
-        overflow: visible;      /* Hogy ne vágja le a tartalmat */
+        overflow: visible;
     }
 
     .form-container {
-        position: relative;     /* Kikapcsolja az absolute pozicionálást */
-        width: 100% !important; /* Mindkét form teljes szélességű lesz */
+        position: relative;
+        width: 100% !important;
         height: auto !important;
-        opacity: 1 !important;  /* A Sign Up form láthatóságát is visszaállítja */
-        transform: none !important; /* Semlegesíti a JS/CSS alapú elmozdításokat */
+        opacity: 1 !important;
+        transform: none !important;
         z-index: 1 !important;
     }
 
     form {
-        padding: 40px 20px;     /* Kicsit keskenyebb padding a mobil képernyőkhöz */
+        padding: 40px 20px;
     }
 
-    /* Az animálós overlay panelt mobilon teljesen elrejtjük, mert használhatatlan lenne */
     .overlay-container {
         display: none !important;
     }
 
-    /* Ha van fixált lábléced, mobilon jobb ha elengedi a képernyő alját, hogy ne takarjon ki semmit */
     footer {
         position: relative;
         margin-top: 20px;
