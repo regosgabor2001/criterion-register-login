@@ -27,7 +27,7 @@ docker compose up -d --build
 3. Install Composer Dependencies
 
 Bash
-docker compose exec app composer install
+docker compose exec web composer install
 The application is accessible on this address:
 http://localhost:8080
 
